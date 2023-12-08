@@ -1,8 +1,10 @@
-package java.config;
+package config;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class TestCode {
 	public static void main(String args[]) throws IOException {
@@ -20,12 +22,12 @@ public class TestCode {
 		
 		
 		String text = "abcde";
-		//CryptoModule cm = new CryptoModule();
+		CryptoModule cm = new CryptoModule();
 		String a = "";
 		String b = "";
 		try {
-			//a = cm.aesCBCEncode(text);
-			//b = cm.aesCBCDecode(a);
+			a = cm.aesCBCEncode(text);
+			b = cm.aesCBCDecode(a);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,6 +36,12 @@ public class TestCode {
 		System.out.println("original : " + text);
 		System.out.println("crypto : " + a);
 		System.out.println("plan : " + b);
+		
+		
+		 Path currentPath = Paths.get("");
+	     String path = System.getProperty("user.home") + "\\Documents\\NextTrip";
+	     
+	     System.out.println(path);
 		
 		
 	}

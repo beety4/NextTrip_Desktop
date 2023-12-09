@@ -14,10 +14,9 @@ public class UserDTO {
 	private String password;
 	private String name;
 	private String birth;
-	private String gender;
+	private int gender;
 	private String email;
 	private String joindate;
 	private String img;
-	private String depart;
-	private String roles;
+	private String principal;
 }

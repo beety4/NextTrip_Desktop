@@ -3,7 +3,7 @@ package config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class Mysql {
+public class MysqlConn {
 	public static Connection getConnection() {
 		try {
 			String server = "jdbc:mysql://akotis.kr:3306/nextTrip";

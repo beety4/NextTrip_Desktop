@@ -1,6 +1,7 @@
 package config.customlib;
 
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+
+import domain.review.ReviewDTO;
 
 public class CustomUtility {
 	// JLabel 혹은 JButton에 이미지 삽입과 크기를 조정하는 메소드
@@ -50,5 +53,28 @@ public class CustomUtility {
 		Matcher m = p.matcher(email);
 		return m.matches();
 	}
+	
+	
+	// review table 세팅을 위한 ArrayList > 2차원 배열
+	public String[][] listToArray(ArrayList<ReviewDTO> list) {
+		if(list == null || list.isEmpty()) {
+			return null;
+		}
+		
+		String[][] result = new String[list.size()][5];
+		for(int i=0; i<list.size(); i++) {
+			result[i][0] = Integer.toString(list.get(i).getReviewNo());
+			result[i][1] = list.get(i).getTitle();
+			result[i][2] = list.get(i).getRegion();
+			result[i][3] = list.get(i).getDate().split(" ")[0];
+			result[i][4] = Integer.toString(list.get(i).getViewC());
+		}
+		return result;
+	}
+	
+	
+	
+	
+	
 
 }

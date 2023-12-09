@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
 		CustomCookie customCookie = new CustomCookie();
 		switch(customCookie.getCookie()) {
 		case 0:	// 로그인 성공
-			setContentPane(new IntroPanel(this));
+			setContentPane(new MainTabPanel(this));
 			revalidate();
 			break;
 		case 1:	// 무결성 검사 실패! 위변조 감지

@@ -5,44 +5,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 
 public class TestCode {
 	public static void main(String args[]) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		//double x = Double.parseDouble(br.readLine());
-		//double y = Double.parseDouble(br.readLine());
-		double x = 1303;
-		double y = 469;
-		//double divide = Double.parseDouble(br.readLine());
 		
-		
-		//double rs1 = x/divide;
-		//double rs2 = y/divide;
-		//System.out.println(rs1 + " " + rs2);
-		
-		
-		String text = "abcde";
-		CryptoModule cm = new CryptoModule();
-		String a = "";
-		String b = "";
+		String input = "P@ssw0rd!";
+		String saltValue = "NextTrip WELCOME!";
+		StringBuffer result = new StringBuffer();
 		try {
-			a = cm.aesCBCEncode(text);
-			b = cm.aesCBCDecode(a);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+        	// 입력한 값에 Hash Algo 적용
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			/****** 가염 처리과정 ******/
+			//byte[] salt = saltValue.getBytes();
+			digest.reset();
+			///digest.update(salt);
+			byte[] chars = digest.digest(input.getBytes("UTF-8")); // Hash 적용 값을 담아준다.
+			/******* chars -> 16진수 String으로 변환 *******/
+			for(int i = 0; i < chars.length; i++) {
+				String hex = Integer.toHexString(0xff & chars[i]);
+				if(hex.length() == 1) result.append("0"); // 항상 두 자리 16진수로
+				result.append(hex);
+			}
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println("original : " + text);
-		System.out.println("crypto : " + a);
-		System.out.println("plan : " + b);
-		
-		
-		 Path currentPath = Paths.get("");
-	     String path = System.getProperty("user.home") + "\\Documents\\NextTrip";
-	     
-	     System.out.println(path);
+
+
+		System.out.println(result.toString());
 		
 		
 	}
+	
+	
+	
 }

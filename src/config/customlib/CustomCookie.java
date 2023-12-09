@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import config.CryptoModule;
-import domain.sign.UserDAO;
+import domain.sign.SignDAO;
+import domain.sign.UserDTO;
 
 public class CustomCookie {
 	private final String folderPath = System.getProperty("user.home") + "\\Documents\\NextTrip";
@@ -33,10 +34,15 @@ public class CustomCookie {
 			// 파일이 없을 시 생성
 			Path chkFile = Paths.get(filePath);
 			Files.createFile(chkFile);
-			
-
+		}catch(Exception e) {
+			System.out.println("====File AlreadyExists====");
+		}
+		
+		
+		
+		try {
 			// 쿠키에 넣을 데이터 넣을 데이터 세팅
-			String id = (String)session.getAttributes("sName");
+			String id = (String)session.getAttributes("sID");
 			LocalDateTime expireDate = LocalDateTime.now().plusDays(30);
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd/HH:mm:ss");
 			String datetime = expireDate.format(format);
@@ -53,7 +59,7 @@ public class CustomCookie {
 			
 			// 무결성을 위한 SHA-1 값 DB저장
 			String fileHash = cryptoModule.getFileHash(filePath);
-			UserDAO userDAO = new UserDAO();
+			SignDAO userDAO = new SignDAO();
 			userDAO.setFileHash(id, fileHash);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -86,7 +92,7 @@ public class CustomCookie {
 			boolean integrity = false;
 			
 			// 쿠키 데이터 무결성 검사
-			UserDAO userDAO = new UserDAO();
+			SignDAO userDAO = new SignDAO();
 			ArrayList<String> hashList = userDAO.getFileHash(id);
 			String local = cryptoModule.getFileHash(filePath);
 			
@@ -110,7 +116,10 @@ public class CustomCookie {
 				invalidate();
 			}
 			
-			session.setAttributes("sName", userDAO.getNameByID(id));
+			UserDTO userDTO = userDAO.getUserInfo(id);
+			session.setAttributes("sID", id);
+			session.setAttributes("sNAME", userDTO.getName());
+			session.setAttributes("sIMG", userDTO.getImg());
 		}catch(Exception e) {
 			e.printStackTrace();
 			return 1;

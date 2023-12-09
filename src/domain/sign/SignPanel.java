@@ -94,7 +94,7 @@ public class SignPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public SignPanel(JFrame win) {
-		CustomUtility cu = new CustomUtility();
+		CustomUtility cUtils = new CustomUtility();
 		CaptchaConfig captchaConfig = new CaptchaConfig();
 		CustomSession session = new CustomSession();
 		CustomCookie customCookie = new CustomCookie();
@@ -120,7 +120,7 @@ public class SignPanel extends JPanel {
 		
 		
 		logo.setBounds(408, 74, 301, 136);
-		cu.setImg(logo, "src/resource/logo-full.png", 301, 136);
+		cUtils.setImg(logo, "src/resource/logo-full.png", 301, 136);
 		add(logo);
 		
 		lblLogin.setBounds(131, 10, 87, 38);
@@ -170,14 +170,14 @@ public class SignPanel extends JPanel {
 				String pw = new String(tbxPW.getPassword());
 				
 				// Null or 공백 검사
-				if(cu.isNullOrEmpty(new String[] {id, pw})) {
+				if(cUtils.isNullOrEmpty(new String[] {id, pw})) {
 					JOptionPane.showMessageDialog(null, "값을 입력해 주세요!");
 					return;
 				}
 				
 				
 				// 보안 문자 검사 로직
-				if(cu.isNullOrEmpty(captchaInput)) {
+				if(cUtils.isNullOrEmpty(captchaInput)) {
 					JOptionPane.showMessageDialog(null, "보안문자를 입력해 주세요!");
 					return;
 				}
@@ -192,11 +192,14 @@ public class SignPanel extends JPanel {
 				
 				
 				// DB와 로그인 로직 수행
-				UserDAO userDAO = new UserDAO();
+				SignDAO userDAO = new SignDAO();
 				int result = userDAO.login(id, pw);
 				switch(result) {
 					case 1:
-						session.setAttributes("sName", userDAO.getNameByID(id));
+						UserDTO userDTO = userDAO.getUserInfo(id);
+						session.setAttributes("sID", id);
+						session.setAttributes("sNAME", userDTO.getName());
+						session.setAttributes("sIMG", userDTO.getImg());
 						
 						// 자동 로그인 체크 시
 						if(chkMaintain.isSelected()) {
@@ -204,19 +207,22 @@ public class SignPanel extends JPanel {
 						}
 						
 						win.setContentPane(new IntroPanel(win));
-						session.removeAttributes("captcha");
 						win.revalidate();
+						session.removeAttributes("captcha");
 						break;
 					case -1:
-						JOptionPane.showMessageDialog(null, "ID가 올바르지 않습니다.");
+						JOptionPane.showMessageDialog(null, "Database 오류 입니다. 잠시 후 시도해주세요.");
 						break;
 					case 0:
 						JOptionPane.showMessageDialog(null, "PW가 올바르지 않습니다.");
 						break;
+					case -2:
+						JOptionPane.showMessageDialog(null, "존재하지 않는 ID 입니다.");
+						break;
 				}
 			}
 		});
-		cu.setImg(btnLogin, "src/resource/element/btnLogin.png", 193, 83);
+		cUtils.setImg(btnLogin, "src/resource/element/btnLogin.png", 193, 83);
 		pnlLogin.add(btnLogin);
 		
 		lblPW.setBounds(16, 93, 67, 38);
@@ -340,13 +346,13 @@ public class SignPanel extends JPanel {
 				String pwchk = new String(tbxRPWChk.getPassword());
 				String name = tbxName.getText();
 				String birth = null;
-				String gender = cu.getWhatSelected(new JRadioButton[] {rdbMale, rdbFemale});
+				String gender = cUtils.getWhatSelected(new JRadioButton[] {rdbMale, rdbFemale});
 				String email = tbxEmail.getText();
 				
 				
 				
 				// 유효성 검사
-				if(cu.isNullOrEmpty(new String[] {id, pw, pwchk, name, gender, email}) || chooserBirth.getDate() == null) {
+				if(cUtils.isNullOrEmpty(new String[] {id, pw, pwchk, name, gender, email}) || chooserBirth.getDate() == null) {
 					JOptionPane.showMessageDialog(null, "값을 입력해 주세요!");
 					return;
 				} else {
@@ -367,13 +373,13 @@ public class SignPanel extends JPanel {
 						.id(id).password(pw)
 						.name(name)
 						.birth(birth)
-						.gender(gender)
+						.gender(gender.equals("M") ? 1 : 0)
 						.email(email)
 						.build();
 						
 				
 				// DB와 회원가입 로직 실행
-				UserDAO userDAO = new UserDAO();
+				SignDAO userDAO = new SignDAO();
 				int result = userDAO.register(userDTO);
 				switch(result) {
 					case 1:
@@ -387,7 +393,7 @@ public class SignPanel extends JPanel {
 				}
 			}
 		});
-		cu.setImg(btnRegister, "src/resource/element/btnRegister.png", 193, 83);
+		cUtils.setImg(btnRegister, "src/resource/element/btnRegister.png", 193, 83);
 		pnlRegister.add(btnRegister);
 		
 		btnGoLogin.setBounds(236, 287, 244, 15);
@@ -408,7 +414,7 @@ public class SignPanel extends JPanel {
 				String email = tbxEmail.getText();
 				
 				// 정규표현식을 통한 email 유효성 검사
-				if(cu.isEmail(email) == false) {
+				if(cUtils.isEmail(email) == false) {
 					JOptionPane.showMessageDialog(null, "옳바른 형식의 Email 주소가 아닙니다!");
 					return;
 				}

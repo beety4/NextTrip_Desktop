@@ -81,6 +81,7 @@ public class SignDAO {
 			if(rs.next()) {
 				return UserDTO.builder()
 						.id(rs.getString(1))
+						.password(rs.getString(2))
 						.name(rs.getString(3))
 						.birth(rs.getString(4))
 						.gender(rs.getInt(5))

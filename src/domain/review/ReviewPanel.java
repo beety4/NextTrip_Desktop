@@ -10,21 +10,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 
 import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
 import javax.swing.ListSelectionModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ReviewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private JLabel tabName = new JLabel("리뷰 게시판");
 	private String[] columnType = {"번호" ,"제목", "지역" ,"작성일", "조회수"};
 	private JTextField textField;
 	
@@ -50,8 +49,6 @@ public class ReviewPanel extends JPanel {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
 		
-		tabName.setBounds(138, 50, 102, 61);
-		add(tabName);
 		
 		// 1페이지 리뷰 게시판 10개 항목 Data 가져오기
 		ReviewDAO reviewDAO = new ReviewDAO();
@@ -89,6 +86,12 @@ public class ReviewPanel extends JPanel {
 		
 
 		JButton btnNewButton_1 = new JButton("글 작성");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				win.setContentPane(new AddReviewPanel(win));
+				win.revalidate();
+			}
+		});
 		btnNewButton_1.setFont(new Font("굴림", Font.PLAIN, 15));
 		btnNewButton_1.setBounds(82, 42, 98, 37);
 		add(btnNewButton_1);

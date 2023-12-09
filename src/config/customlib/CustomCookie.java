@@ -59,8 +59,8 @@ public class CustomCookie {
 			
 			// 무결성을 위한 SHA-1 값 DB저장
 			String fileHash = cryptoModule.getFileHash(filePath);
-			SignDAO userDAO = new SignDAO();
-			userDAO.setFileHash(id, fileHash);
+			SignDAO signDAO = new SignDAO();
+			signDAO.setFileHash(id, fileHash);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -92,8 +92,8 @@ public class CustomCookie {
 			boolean integrity = false;
 			
 			// 쿠키 데이터 무결성 검사
-			SignDAO userDAO = new SignDAO();
-			ArrayList<String> hashList = userDAO.getFileHash(id);
+			SignDAO signDAO = new SignDAO();
+			ArrayList<String> hashList = signDAO.getFileHash(id);
 			String local = cryptoModule.getFileHash(filePath);
 			
 			for(String value : hashList) {
@@ -112,11 +112,11 @@ public class CustomCookie {
 			LocalDateTime now = LocalDateTime.now();
 			if(now.isAfter(cookie.getExpires())) {
 				// 만료된 쿠키라면 DB에서도 삭제
-				userDAO.rmFileHash(id, local);
+				signDAO.rmFileHash(id, local);
 				invalidate();
 			}
 			
-			UserDTO userDTO = userDAO.getUserInfo(id);
+			UserDTO userDTO = signDAO.getUserInfo(id);
 			session.setAttributes("sID", id);
 			session.setAttributes("sNAME", userDTO.getName());
 			session.setAttributes("sIMG", userDTO.getImg());

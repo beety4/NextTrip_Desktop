@@ -30,6 +30,7 @@ import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
 import config.email.EmailService;
 import config.email.TimeThread;
+import domain.MainTabPanel;
 import domain.intro.IntroPanel;
 import nl.captcha.Captcha;
 
@@ -192,11 +193,11 @@ public class SignPanel extends JPanel {
 				
 				
 				// DB와 로그인 로직 수행
-				SignDAO userDAO = new SignDAO();
-				int result = userDAO.login(id, pw);
+				SignDAO signDAO = new SignDAO();
+				int result = signDAO.login(id, pw);
 				switch(result) {
 					case 1:
-						UserDTO userDTO = userDAO.getUserInfo(id);
+						UserDTO userDTO = signDAO.getUserInfo(id);
 						session.setAttributes("sID", id);
 						session.setAttributes("sNAME", userDTO.getName());
 						session.setAttributes("sIMG", userDTO.getImg());
@@ -206,7 +207,7 @@ public class SignPanel extends JPanel {
 							customCookie.setCookie();
 						}
 						
-						win.setContentPane(new IntroPanel(win));
+						win.setContentPane(new MainTabPanel(win));
 						win.revalidate();
 						session.removeAttributes("captcha");
 						break;
@@ -379,8 +380,8 @@ public class SignPanel extends JPanel {
 						
 				
 				// DB와 회원가입 로직 실행
-				SignDAO userDAO = new SignDAO();
-				int result = userDAO.register(userDTO);
+				SignDAO signDAO = new SignDAO();
+				int result = signDAO.register(userDTO);
 				switch(result) {
 					case 1:
 						JOptionPane.showMessageDialog(null, "회원가입 성공!");						

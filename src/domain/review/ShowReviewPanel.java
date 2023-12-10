@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import config.customlib.CustomSession;
@@ -41,7 +40,6 @@ public class ShowReviewPanel extends JPanel {
 	
 	private JButton btnEdit = new JButton("수정");
 	private JButton btnDelete = new JButton("삭제");
-	private final JLabel lblNewLabel = new JLabel("New label");
 
 	
 	
@@ -109,8 +107,9 @@ public class ShowReviewPanel extends JPanel {
 		scrollPane = new JScrollPane(txtContent, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		txtContent.setContentType("text/html");
-		String imgUrl = "http://aws.akotis.kr:8080/NextTrip/" + reviewDTO.getImg();
+		String imgUrl = "http://aws.akotis.kr:8080/NextTrip/" + reviewDTO.getImg().replace("\\", "/");
 		String content = "<html><body>" + reviewDTO.getContent() + "<br><img src='" + imgUrl + "'></body></html>";
+		System.out.println(content);
 		txtContent.setText(content);
 		txtContent.setEditable(false);
 
@@ -148,9 +147,6 @@ public class ShowReviewPanel extends JPanel {
 				btnLike.setText("좋아요 + " + likeCnt);
 			}
 		});
-		lblNewLabel.setBounds(0, 0, 50, 15);
-		
-		add(lblNewLabel);
 		add(btnLike);
 		
 		
@@ -165,7 +161,7 @@ public class ShowReviewPanel extends JPanel {
 		
 		
 		// 댓글 작성 버튼
-		btnSubmit.setBounds(928, 608, 91, 52);
+		btnSubmit.setBounds(928, 583, 91, 52);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// 데이터 가져오기

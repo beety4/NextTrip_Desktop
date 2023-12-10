@@ -26,7 +26,9 @@ import domain.sign.SignPanel;
 
 public class MainTabPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private JLabel logo = new JLabel("로고");
+	private JLabel lblLogo = new JLabel("로고");
+	private JLabel lblProfileImg = new JLabel();
+	private JLabel lblName = new JLabel();
 	
 	private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
 	private JMenuBar menuBar = new JMenuBar();
@@ -39,16 +41,6 @@ public class MainTabPanel extends JPanel {
 	private JMenu mnConfig = new JMenu("설정");
 	private JMenuItem mntmBgColor = new JMenuItem("배경색 설정");
 	
-	
-	
-	
-	@Override
-	public void paintComponent(Graphics g) {
-		Image bg = new ImageIcon("src/resource/backgroundimage.png <-- required").getImage();
-		g.drawImage(bg, 0, 0, null);
-		setOpaque(false);
-		super.paintComponent(g);
-	}
 	
 	
 	/**
@@ -74,9 +66,18 @@ public class MainTabPanel extends JPanel {
 		tabbedPane.addTab("북마크", null, new BookMarkPanel(win), null);
 		
 		
-		logo.setBounds(10, 28, 114, 41);
-		cUtils.setImg(logo, "src/resource/logo-full.png", 114, 41);
-		add(logo);
+		lblLogo.setBounds(10, 28, 114, 41);
+		cUtils.setImg(lblLogo, "src/resource/logo-full.png", 114, 41);
+		add(lblLogo);
+		
+		String profileImg = (String)session.getAttributes("sIMG");
+		lblProfileImg.setBounds(972, 28, 57, 44);
+		cUtils.setImg(lblProfileImg, profileImg, 40, 40);
+		add(lblProfileImg);
+		
+		lblName.setBounds(846, 28, 114, 41);
+		lblName.setText((String)session.getAttributes("sNAME"));
+		add(lblName);
 		
 		menuBar.setBounds(0, 0, 1100, 23);
 		add(menuBar);

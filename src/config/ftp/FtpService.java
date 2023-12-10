@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 
 import org.apache.commons.net.ftp.FTPSClient;
 
-import config.FtpConn;
 import config.customlib.CustomSession;
 import domain.sign.SignDAO;
 import domain.sign.UserDTO;

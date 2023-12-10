@@ -117,9 +117,10 @@ public class CustomCookie {
 			}
 			
 			UserDTO userDTO = signDAO.getUserInfo(id);
+			String remote = "http://aws.akotis.kr:8080/NextTrip/";
 			session.setAttributes("sID", id);
 			session.setAttributes("sNAME", userDTO.getName());
-			session.setAttributes("sIMG", userDTO.getImg());
+			session.setAttributes("sIMG", remote + userDTO.getImg().replace("\\", "/"));
 		}catch(Exception e) {
 			e.printStackTrace();
 			return 1;

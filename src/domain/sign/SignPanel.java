@@ -77,10 +77,11 @@ public class SignPanel extends JPanel {
 	private boolean emailChk = false;
 	
 	
-	
 	JLabel lblCaptcha = new JLabel("");
 	private final JButton btnSendMail = new JButton("전송");
 	private final JButton btnConfirm = new JButton("확인");
+	
+	
 	
 	@Override
 	public void paintComponent(Graphics g) {
@@ -198,9 +199,10 @@ public class SignPanel extends JPanel {
 				switch(result) {
 					case 1:
 						UserDTO userDTO = signDAO.getUserInfo(id);
+						String remote = "http://aws.akotis.kr:8080/NextTrip/";
 						session.setAttributes("sID", id);
 						session.setAttributes("sNAME", userDTO.getName());
-						session.setAttributes("sIMG", userDTO.getImg());
+						session.setAttributes("sIMG", remote + userDTO.getImg().replace("\\", "/"));
 						
 						// 자동 로그인 체크 시
 						if(chkMaintain.isSelected()) {

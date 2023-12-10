@@ -6,7 +6,6 @@ import java.util.List;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import config.HttpConn;
 import config.RandModule;
 import domain.search.DefaultJson;
 import domain.search.TourSpotDTO;

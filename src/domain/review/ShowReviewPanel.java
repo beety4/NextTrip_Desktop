@@ -13,11 +13,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
 import domain.MainTabPanel;
+import javax.swing.JTextPane;
 
 public class ShowReviewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -27,7 +29,8 @@ public class ShowReviewPanel extends JPanel {
 	private JLabel lblRegion = new JLabel("지역");
 	private JLabel lblDate = new JLabel("작성일자");
 	private JScrollPane scrollPane = new JScrollPane();
-	private JLabel lblContent = new JLabel("게시글");
+	//private JTextArea txtContent = new JTextArea("게시글");
+	private JTextPane txtContent = new JTextPane();
 	
 	private JButton btnLike = new JButton("좋아요");
 	
@@ -38,6 +41,7 @@ public class ShowReviewPanel extends JPanel {
 	
 	private JButton btnEdit = new JButton("수정");
 	private JButton btnDelete = new JButton("삭제");
+	private final JLabel lblNewLabel = new JLabel("New label");
 
 	
 	
@@ -101,9 +105,17 @@ public class ShowReviewPanel extends JPanel {
 		lblDate.setText("작성일자 : " + reviewDTO.getDate());
 		add(lblDate);
 		
-		lblContent.setText(reviewDTO.getContent());
+		//세로 스크롤 설정
+		scrollPane = new JScrollPane(txtContent, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		txtContent.setContentType("text/html");
+		String imgUrl = "http://aws.akotis.kr:8080/NextTrip/" + reviewDTO.getImg();
+		String content = "<html><body>" + reviewDTO.getContent() + "<br><img src='" + imgUrl + "'></body></html>";
+		txtContent.setText(content);
+		txtContent.setEditable(false);
+
 		scrollPane.setBounds(80, 113, 939, 291);
-		scrollPane.setViewportView(lblContent);
+		scrollPane.setViewportView(txtContent);
 		add(scrollPane);
 		
 		
@@ -136,16 +148,19 @@ public class ShowReviewPanel extends JPanel {
 				btnLike.setText("좋아요 + " + likeCnt);
 			}
 		});
+		lblNewLabel.setBounds(0, 0, 50, 15);
+		
+		add(lblNewLabel);
 		add(btnLike);
 		
 		
 
 		reloadComment(reviewNo);
-		scrollComment.setBounds(80, 483, 940, 115);
+		scrollComment.setBounds(79, 458, 940, 115);
 		scrollComment.setViewportView(lblComment);
 		add(scrollComment);
 		
-		textArea.setBounds(80, 608, 829, 52);
+		textArea.setBounds(80, 583, 829, 52);
 		add(textArea);
 		
 		

@@ -67,10 +67,10 @@ public class ReviewDAO {
 					pstmt.setString(1, "%"+searchIt+"%");
 					pstmt.setString(2, "%"+searchIt+"%");
 					break;
-				default:	// 기본 쿼리
-					query = "SELECT * FROM review_table WHERE available = 1 ORDER BY reviewNo DESC LIMIT ?, 10";
+				default:	// 기본 쿼리 - 시간문제로 페이징은 삭제(기능은 완성)
+					query = "SELECT * FROM review_table WHERE available = 1 ORDER BY reviewNo DESC"; // LIMIT ?, 10";
 					pstmt = conn.prepareStatement(query);
-					pstmt.setInt(1, start);
+					//pstmt.setInt(1, start);
 					break;
 			}
 			

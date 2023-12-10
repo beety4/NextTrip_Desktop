@@ -1,6 +1,10 @@
 package domain.review;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -10,24 +14,23 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
-import javax.swing.ListSelectionModel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class ReviewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private String[] columnType = {"번호" ,"제목", "지역" ,"작성일", "조회수"};
-	private JTextField tbxSearch;
+	private DefaultTableModel model = new DefaultTableModel();
+	private JButton btnAddReview = new JButton("글 작성");
 	
-
-	
+	private JComboBox comboBox = new JComboBox();
+	private JTextField tbxSearch = new JTextField();
+	private JButton btnSearch = new JButton("검색");
+	private JButton btnRefresh = new JButton("새로고침");
 	
 	
 	/**
@@ -46,10 +49,21 @@ public class ReviewPanel extends JPanel {
 		// 1페이지 리뷰 게시판 10개 항목 Data 가져오기
 		ReviewDAO reviewDAO = new ReviewDAO();
 		ArrayList<ReviewDTO> reviewList = reviewDAO.getReviewList(1, 0, null);
-		String[][] tableData = cUtils.listToArray(reviewList);
+		String[][] tableData = cUtils.reviewListToArray(reviewList);
 		
 		
-		JTable mainTable = new JTable(tableData, columnType);
+		// 테이블 클릭 세팅
+		JTable mainTable = new JTable(model);
+		model.addColumn("번호");
+		model.addColumn("제목");
+		model.addColumn("지역");
+		model.addColumn("작성일");
+		model.addColumn("조회수");
+		
+		for(String[] row : tableData) {
+			model.addRow(row);
+		}
+		
 		mainTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -60,43 +74,73 @@ public class ReviewPanel extends JPanel {
 			}
 		});
 		mainTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		mainTable.setBounds(82, 89, 935, 551);
+		mainTable.setBounds(37, 89, 935, 392);
 		add(mainTable);
 		
 		
 		
 		
-		
-		
-		JButton btnSearch = new JButton("검색");
-		btnSearch.setFont(new Font("굴림", Font.PLAIN, 15));
-		btnSearch.setBounds(919, 42, 98, 37);
-		add(btnSearch);
-		
-		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("굴림", Font.PLAIN, 15));
-		comboBox.setBounds(495, 42, 129, 37);
+		comboBox.setBounds(449, 40, 129, 37);
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"제목", "본문", "제목+본문"}));
 		add(comboBox);
-		
-		tbxSearch = new JTextField();
+
 		tbxSearch.setFont(new Font("굴림", Font.PLAIN, 15));
-		tbxSearch.setBounds(636, 42, 275, 38);
+		tbxSearch.setBounds(588, 40, 275, 38);
 		add(tbxSearch);
 		tbxSearch.setColumns(10);
 		
+
+		// 검색 버튼
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// 검색 변수 설정
+				String searchIt = tbxSearch.getText();
+				int search = comboBox.getSelectedIndex() + 1;
+				
+				ArrayList<ReviewDTO> reviewList = reviewDAO.getReviewList(1, search, searchIt);
+				String[][] tableData = cUtils.reviewListToArray(reviewList);
+				
+				model.setRowCount(0);
+				for(String[] row : tableData) {
+					model.addRow(row);
+				}
+		
+				
+			}
+		});
+		btnSearch.setFont(new Font("굴림", Font.PLAIN, 15));
+		btnSearch.setBounds(871, 42, 98, 37);
+		add(btnSearch);
+		
 		
 
-		JButton btnAddReview = new JButton("글 작성");
+		// 글 작성 패널 변경
 		btnAddReview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				win.setContentPane(new AddReviewPanel(win));
+				win.setContentPane(new AddReviewPanel(win, null));
 				win.revalidate();
 			}
 		});
 		btnAddReview.setFont(new Font("굴림", Font.PLAIN, 15));
-		btnAddReview.setBounds(82, 42, 98, 37);
+		btnAddReview.setBounds(37, 42, 98, 37);
 		add(btnAddReview);
+		
+		
+		// 새로고침
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<ReviewDTO> reviewList = reviewDAO.getReviewList(1, 0, null);
+				String[][] tableData = cUtils.reviewListToArray(reviewList);
+				
+				model.setRowCount(0);
+				for(String[] row : tableData) {
+					model.addRow(row);
+				}
+			}
+		});
+		btnRefresh.setBounds(881, 491, 91, 23);
+		add(btnRefresh);
 		
 		
 		

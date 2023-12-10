@@ -22,6 +22,7 @@ import domain.MainTabPanel;
 
 public class AddReviewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private JButton btnBack = new JButton();
 	
 	private JLabel lblReview = new JLabel("여행 후기 작성");
 	private JLabel lblTitle = new JLabel("제목");
@@ -45,7 +46,7 @@ public class AddReviewPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public AddReviewPanel(JFrame win) {
+	public AddReviewPanel(JFrame win, ReviewDTO dbreviewDTO) {
 		CustomUtility cUtils = new CustomUtility();
 		CustomSession session = new CustomSession();
 		setBounds(0, 0, 1100, 700);
@@ -53,6 +54,16 @@ public class AddReviewPanel extends JPanel {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
 		
+		
+		btnBack.setBounds(12, 10, 40, 36);
+		cUtils.setImg(btnBack, "src/resource/element/backIcon.png", 50, 50);
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				win.setContentPane(new MainTabPanel(win));
+				win.revalidate();
+			}
+		});
+		add(btnBack);
 		
 		lblReview.setFont(new Font("굴림", Font.PLAIN, 15));
 		lblReview.setBounds(80, 43, 429, 36);
@@ -104,6 +115,17 @@ public class AddReviewPanel extends JPanel {
 		add(btnFile);
 		
 		
+		// 본 패널을 게시글 수정으로 들어왔을 경우
+		if(dbreviewDTO != null) {
+			tbxTitle.setText(dbreviewDTO.getTitle());
+			tbxRegion.setText(dbreviewDTO.getRegion());
+			textArea.setText(dbreviewDTO.getContent());
+			btnUpload.setText("수정");
+		}
+		
+		
+		
+		
 		
 		// 게시글 업로드 버튼
 		btnUpload.addActionListener(new ActionListener() {
@@ -136,7 +158,13 @@ public class AddReviewPanel extends JPanel {
 				
 				// DB 저장
 				ReviewDAO reviewDAO = new ReviewDAO();
-				reviewDAO.addReview(reviewDTO);
+				if(dbreviewDTO == null) {
+					reviewDAO.addReview(reviewDTO);		// 게시글 추가
+				} else {
+					reviewDTO.setReviewNo(dbreviewDTO.getReviewNo());
+					reviewDAO.editReview(reviewDTO);	// 게시글 수정
+				}
+				
 				
 				// Panel 화면 전환
 				win.setContentPane(new MainTabPanel(win));

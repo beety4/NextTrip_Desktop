@@ -1,10 +1,15 @@
 package domain.review;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -12,19 +17,48 @@ import javax.swing.border.EmptyBorder;
 
 import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
+import domain.MainTabPanel;
 
 public class ShowReviewPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-
-	private JLabel lblNewLabel = new JLabel("제목");
-	private JLabel lblNewLabel_1 = new JLabel("작성일자");
+	private JButton btnBack = new JButton();
+	
+	private JLabel lblTitle = new JLabel("제목");
+	private JLabel lblRegion = new JLabel("지역");
+	private JLabel lblDate = new JLabel("작성일자");
 	private JScrollPane scrollPane = new JScrollPane();
-	private JLabel lblNewLabel_2 = new JLabel("게시글");
-	private JButton btnNewButton = new JButton("좋아요");
-	private JScrollPane scrollPane_1 = new JScrollPane();
+	private JLabel lblContent = new JLabel("게시글");
+	
+	private JButton btnLike = new JButton("좋아요");
+	
+	private JScrollPane scrollComment = new JScrollPane();
+	private JLabel lblComment = new JLabel();
 	private JTextArea textArea = new JTextArea();
-	private JButton btnNewButton_1 = new JButton("전송");
+	private JButton btnSubmit = new JButton("전송");
+	
+	private JButton btnEdit = new JButton("수정");
+	private JButton btnDelete = new JButton("삭제");
 
+	
+	
+	// 댓글 목록 새로 고침하여 가져오는 메소드
+	public void reloadComment(int reviewNo) {
+		ReviewDAO reviewDAO = new ReviewDAO();
+		ArrayList<CommentDTO> commentList = reviewDAO.getCommentList(reviewNo);
+		if (commentList != null && commentList.isEmpty() == false) {
+			lblComment.setText("<html>");
+			for (CommentDTO commentDTO : commentList) {
+				String origin = lblComment.getText();
+				String remake = origin + commentDTO.getName() + " " + commentDTO.getDate() + "<br>"
+						+ commentDTO.getContent() + "<br>";
+				lblComment.setText(remake);
+			}
+			lblComment.setText(lblComment.getText() + "</html>");
+		}
+	}
+	
+	
+	
 	/**
 	 * Create the panel.
 	 */
@@ -36,50 +70,138 @@ public class ShowReviewPanel extends JPanel {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);		
 		
+		btnBack.setBounds(12, 10, 40, 36);
+		cUtils.setImg(btnBack, "src/resource/element/backIcon.png", 50, 50);
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				win.setContentPane(new MainTabPanel(win));
+				win.revalidate();
+			}
+		});
+		add(btnBack);
 		
+		
+		// DB로 게시글 상세 정보 DTO로 받아오기
 		ReviewDAO reviewDAO = new ReviewDAO();
 		ReviewDTO reviewDTO = reviewDAO.getReviewDetail(reviewNo);
 		
 		
+		lblTitle.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblTitle.setBounds(80, 51, 429, 36);
+		lblTitle.setText("제목 : " + reviewDTO.getTitle());
+		add(lblTitle);
 		
-
+		lblRegion.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblRegion.setBounds(80, 81, 91, 28);
+		lblRegion.setText("지역 : " + reviewDTO.getRegion());
+		add(lblRegion);
 		
-		lblNewLabel.setFont(new Font("굴림", Font.PLAIN, 15));
-		lblNewLabel.setBounds(80, 43, 429, 52);
-		add(lblNewLabel);
+		lblDate.setFont(new Font("굴림", Font.PLAIN, 13));
+		lblDate.setBounds(590, 43, 429, 52);
+		lblDate.setText("작성일자 : " + reviewDTO.getDate());
+		add(lblDate);
 		
-		
-		
-		lblNewLabel_1.setFont(new Font("굴림", Font.PLAIN, 13));
-		lblNewLabel_1.setBounds(590, 43, 429, 52);
-		add(lblNewLabel_1);
-		
-		
+		lblContent.setText(reviewDTO.getContent());
 		scrollPane.setBounds(80, 113, 939, 291);
+		scrollPane.setViewportView(lblContent);
 		add(scrollPane);
 		
 		
-		scrollPane.setViewportView(lblNewLabel_2);
+		// 좋아요 눌렀는지 체크
+		String name = (String)session.getAttributes("sNAME");
+		boolean isLike = reviewDAO.isLike(reviewNo, name);
+		if(isLike) {
+			btnLike.setBackground(Color.GREEN);
+		} else {
+			btnLike.setBackground(Color.GRAY);
+		}
 		
 		
-		btnNewButton.setFont(new Font("굴림", Font.PLAIN, 13));
-		btnNewButton.setBounds(910, 412, 110, 36);
-		add(btnNewButton);
+		// 좋아요 입력
+		btnLike.setFont(new Font("굴림", Font.PLAIN, 13));
+		btnLike.setBounds(910, 412, 110, 36);
+		btnLike.setText("좋아요 + " + reviewDTO.getLikeC());
+		btnLike.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean isLike = reviewDAO.isLike(reviewNo, name);
+				if(isLike) {
+					reviewDAO.deleteReviewLike(reviewNo, name);
+					btnLike.setBackground(Color.GRAY);
+				} else {
+					reviewDAO.addReviewLike(reviewNo, name);
+					btnLike.setBackground(Color.GREEN);
+				}
+				
+				int likeCnt = reviewDAO.getLikeCnt(reviewNo);
+				btnLike.setText("좋아요 + " + likeCnt);
+			}
+		});
+		add(btnLike);
 		
 		
-		scrollPane_1.setBounds(80, 483, 940, 115);
-		add(scrollPane_1);
-		
+
+		reloadComment(reviewNo);
+		scrollComment.setBounds(80, 483, 940, 115);
+		scrollComment.setViewportView(lblComment);
+		add(scrollComment);
 		
 		textArea.setBounds(80, 608, 829, 52);
 		add(textArea);
 		
 		
-		btnNewButton_1.setBounds(928, 608, 91, 52);
-		add(btnNewButton_1);
+		// 댓글 작성 버튼
+		btnSubmit.setBounds(928, 608, 91, 52);
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// 데이터 가져오기
+				String content = textArea.getText();
+				
+				// DTO 세팅
+				CommentDTO commentDTO = new CommentDTO();
+				commentDTO.setReviewNo(reviewNo);
+				commentDTO.setName(name);
+				commentDTO.setContent(content);
+				
+				// 댓글 DB 저장
+				reviewDAO.addReviewComment(commentDTO);
+				textArea.setText("");
+				reloadComment(reviewNo);
+			}
+		});
+		add(btnSubmit);
 		
 		
-
+		
+		// 게시글 수정
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				win.setContentPane(new AddReviewPanel(win, reviewDTO));
+				win.revalidate();
+			}
+		});
+		btnEdit.setBounds(80, 414, 91, 23);
+		
+			
+		// 게시글 삭제
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int result = JOptionPane.showConfirmDialog(null, "정말 삭제하시겠습니까?");
+				if(result == 0) {
+					reviewDAO.deleteReview(reviewNo);
+					win.setContentPane(new MainTabPanel(win));
+					win.revalidate();
+				}
+			}
+		});
+		btnDelete.setBounds(183, 414, 91, 23);
+		
+		
+		
+		// 게시글 작성자인지 확인
+		if(name.equals(reviewDTO.getName())) {
+			add(btnEdit);
+			add(btnDelete);
+		}
+		
 	}
-
 }

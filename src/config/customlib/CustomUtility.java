@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
 import domain.review.ReviewDTO;
+import domain.search.TourSpotSearchDTO;
 
 public class CustomUtility {
 	// JLabel 혹은 JButton에 이미지 삽입과 크기를 조정하는 메소드
@@ -92,7 +93,7 @@ public class CustomUtility {
 	
 	
 	// review table 세팅을 위한 ArrayList -> 2차원 배열
-	public String[][] listToArray(ArrayList<ReviewDTO> list) {
+	public String[][] reviewListToArray(ArrayList<ReviewDTO> list) {
 		if(list == null || list.isEmpty()) {
 			return null;
 		}
@@ -108,6 +109,21 @@ public class CustomUtility {
 		return result;
 	}
 	
+	// TourSpot 검색 ArrayList -> 2차원 배열
+	public String[][] tourSearchListToArray(ArrayList<TourSpotSearchDTO> list) {
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+
+		String[][] result = new String[list.size()][4];
+		for (int i = 0; i < list.size(); i++) {
+			result[i][0] = list.get(i).getContentid();
+			result[i][1] = list.get(i).getTitle();
+			result[i][2] = list.get(i).getAddr1();
+			result[i][3] = list.get(i).getModifiedtime();
+		}
+		return result;
+	}
 	
 	
 	

@@ -1,16 +1,14 @@
 package domain;
 
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
@@ -75,7 +73,7 @@ public class MainTabPanel extends JPanel {
 		cUtils.setImg(lblProfileImg, profileImg, 40, 40);
 		add(lblProfileImg);
 		
-		lblName.setBounds(846, 28, 114, 41);
+		lblName.setBounds(914, 28, 65, 41);
 		lblName.setText((String)session.getAttributes("sNAME"));
 		add(lblName);
 		
@@ -95,17 +93,23 @@ public class MainTabPanel extends JPanel {
 		mnMyInfo.add(mntmLogout);
 		mntmLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				session.invalidate();
-				customCookie.invalidate();
-				win.setContentPane(new SignPanel(win));
-				win.revalidate();
+				int result = JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?");
+				if(result == 0) {
+					session.invalidate();
+					customCookie.invalidate();
+					win.setContentPane(new SignPanel(win));
+					win.revalidate();
+				}
 			}
 		});
 		
 		mnMyInfo.add(mntmExit);
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				int result = JOptionPane.showConfirmDialog(null, "정말 종료하시겠습니까?");
+				if(result == 0) {
+					System.exit(0);
+				}
 			}
 		});
 		

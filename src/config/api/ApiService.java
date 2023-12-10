@@ -110,7 +110,7 @@ public class ApiService {
 		return (ArrayList<TourSpotImgDTO>) tourSpotImgList;
 	}
 
-	
+	//키워드 검색으로 결과 가져오기
 	public ArrayList<TourSpotSearchDTO> getTourSpotSearch(String keyword, String contentTypeId) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("/searchKeyword1");

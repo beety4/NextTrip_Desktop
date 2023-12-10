@@ -38,12 +38,21 @@ public class ReviewPanel extends JPanel {
 	private JButton btnSearch = new JButton("검색");
 	private JButton btnRefresh = new JButton("새로고침");
 	private final JScrollPane scrollPane = new JScrollPane();
+	
+	
+	//컬럼 너비 설정하는 메소드
+		private static void setColumnWidth(JTable table, int columnIndex, int width) {
+			TableColumn column = table.getColumnModel().getColumn(columnIndex);
+			column.setPreferredWidth(width);
+			column.setMaxWidth(width);
+			column.setMinWidth(width);
+		}
 
 	/**
 	 * Create the panel.
 	 */
 	public ReviewPanel(JFrame win) {
-		setBackground(new Color(241, 247, 254));
+		setBackground(new Color(249, 252, 255));
 		CustomUtility cUtils = new CustomUtility();
 		CustomSession session = new CustomSession();
 
@@ -160,12 +169,5 @@ public class ReviewPanel extends JPanel {
 		});
 		mainTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-	}
-
-	private static void setColumnWidth(JTable table, int columnIndex, int width) {
-		TableColumn column = table.getColumnModel().getColumn(columnIndex);
-		column.setPreferredWidth(width);
-		column.setMaxWidth(width);
-		column.setMinWidth(width);
 	}
 }

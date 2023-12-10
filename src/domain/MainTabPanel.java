@@ -21,6 +21,7 @@ import domain.intro.IntroPanel;
 import domain.review.ReviewPanel;
 import domain.search.SearchPanel;
 import domain.sign.SignPanel;
+import java.awt.Color;
 
 public class MainTabPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -45,6 +46,7 @@ public class MainTabPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public MainTabPanel(JFrame win) {
+		setBackground(new Color(224, 238, 254));
 		CustomUtility cUtils = new CustomUtility();
 		CustomSession session = new CustomSession();
 		CustomCookie customCookie = new CustomCookie();
@@ -62,6 +64,7 @@ public class MainTabPanel extends JPanel {
 		tabbedPane.addTab("여행지", null, new SearchPanel(win), null);
 		tabbedPane.addTab("여행후기", null, new ReviewPanel(win), null);
 		tabbedPane.addTab("북마크", null, new BookMarkPanel(win), null);
+		lblLogo.setBackground(new Color(223, 238, 253));
 		
 		
 		lblLogo.setBounds(10, 28, 114, 41);
@@ -85,8 +88,7 @@ public class MainTabPanel extends JPanel {
 		mnMyInfo.add(mntmProfile);
 		mntmProfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// 패널 변경
-				// win.setContentpane(myProfile?);
+				win.setContentPane(new domain.sign.ProfilePanel(win));
 			}
 		});
 		

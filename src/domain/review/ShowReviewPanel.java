@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import config.customlib.CustomSession;
@@ -28,7 +30,6 @@ public class ShowReviewPanel extends JPanel {
 	private JLabel lblRegion = new JLabel("지역");
 	private JLabel lblDate = new JLabel("작성일자");
 	private JScrollPane scrollPane = new JScrollPane();
-	// private JTextArea txtContent = new JTextArea("게시글");
 	private JTextPane txtContent = new JTextPane();
 
 	private JButton btnLike = new JButton("좋아요");
@@ -61,7 +62,7 @@ public class ShowReviewPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public ShowReviewPanel(JFrame win, int reviewNo) {
-		setBackground(new Color(241, 247, 254));
+		setBackground(new Color(249, 252, 255));
 		CustomUtility cUtils = new CustomUtility();
 		CustomSession session = new CustomSession();
 		setBounds(0, 0, 1100, 700);
@@ -154,6 +155,11 @@ public class ShowReviewPanel extends JPanel {
 		add(scrollComment);
 
 		textArea.setBounds(80, 583, 829, 52);
+		
+		// Border 설정
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+        textArea.setBorder(border);
+        
 		add(textArea);
 
 		// 댓글 작성 버튼

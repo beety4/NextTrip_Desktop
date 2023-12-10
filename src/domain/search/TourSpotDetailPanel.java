@@ -1,8 +1,9 @@
-package domain.intro;
+package domain.search;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
 
+import config.api.ApiService;
 import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
 import domain.MainTabPanel;
@@ -57,7 +59,10 @@ public class TourSpotDetailPanel extends JPanel {
 		});
 		add(btnBack);
 		
-		
+		//API로 정보 가져오기
+		ApiService apiService = new ApiService();
+		TourSpotDetailDTO dto = apiService.getDetailTourSpot(contentid);
+		/*** 확인 ***/
 		
 		
 		lblPhoto.setBounds(79, 39, 304, 194);
@@ -66,16 +71,20 @@ public class TourSpotDetailPanel extends JPanel {
 		
 		lblAddress.setFont(new Font("굴림", Font.PLAIN, 15));
 		lblAddress.setBounds(79, 251, 358, 27);
+		lblAddress.setText(dto.getAddr1());
+		System.out.println(dto.getHomepage());
 		add(lblAddress);
 		
 		
 		lblPlace.setFont(new Font("굴림", Font.PLAIN, 15));
 		lblPlace.setBounds(430, 39, 77, 27);
+		lblPlace.setText(dto.getTitle());
 		add(lblPlace);
 		
 		
 		lblDescription.setFont(new Font("굴림", Font.PLAIN, 13));
 		lblDescription.setBounds(430, 73, 591, 126);
+		lblDescription.setText(dto.getOverview());
 		add(lblDescription);
 		
 		
@@ -84,6 +93,7 @@ public class TourSpotDetailPanel extends JPanel {
 		
 		
 		lblLink.setBounds(430, 218, 260, 15);
+		lblLink.setText(dto.getHomepage());
 		add(lblLink);
 		
 		

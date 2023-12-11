@@ -158,6 +158,7 @@ public class ReviewPanel extends JPanel {
 		
 		scrollPane.setViewportView(mainTable);
 
+		// 테이블 클릭 세팅
 		mainTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

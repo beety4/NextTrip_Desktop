@@ -1,7 +1,7 @@
 package config.email;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.PasswordAuthentication;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 
 public class GmailConn extends Authenticator {
 	// 이메일 연결

@@ -42,7 +42,7 @@ public class BookMarkDAO {
 
 	// 북마크 여부 확인
 	public boolean isCheck(String contentid, String name) {
-		String query = "SELECT * FROM bookmark_table WHERE contentid = ? AND name = ?";
+		String query = "SELECT COUNT(*) FROM bookmark_table WHERE contentid = ? AND name = ?";
 		ResultSet rs = null;
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(query);
@@ -51,7 +51,9 @@ public class BookMarkDAO {
 
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				return true;
+				if(rs.getInt(1) > 0) {
+					return true;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

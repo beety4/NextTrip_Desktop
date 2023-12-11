@@ -41,21 +41,19 @@ public class ReviewPanel extends JPanel {
 	
 	
 	//컬럼 너비 설정하는 메소드
-		private static void setColumnWidth(JTable table, int columnIndex, int width) {
-			TableColumn column = table.getColumnModel().getColumn(columnIndex);
-			column.setPreferredWidth(width);
-			column.setMaxWidth(width);
-			column.setMinWidth(width);
-		}
+	private static void setColumnWidth(JTable table, int columnIndex, int width) {
+		TableColumn column = table.getColumnModel().getColumn(columnIndex);
+		column.setPreferredWidth(width);
+		column.setMaxWidth(width);
+		column.setMinWidth(width);
+	}
 
 	/**
 	 * Create the panel.
 	 */
 	public ReviewPanel(JFrame win) {
-		setBackground(new Color(249, 252, 255));
 		CustomUtility cUtils = new CustomUtility();
-		CustomSession session = new CustomSession();
-
+		setBackground(new Color(249, 252, 255));
 		setBounds(0, 0, 1100, 700);
 		setSize(1100, 700);
 		setBorder(new EmptyBorder(5, 5, 5, 5));

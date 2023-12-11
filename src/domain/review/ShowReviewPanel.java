@@ -83,6 +83,9 @@ public class ShowReviewPanel extends JPanel {
 		// DB로 게시글 상세 정보 DTO로 받아오기
 		ReviewDAO reviewDAO = new ReviewDAO();
 		ReviewDTO reviewDTO = reviewDAO.getReviewDetail(reviewNo);
+		
+		// 조회수 추가
+		reviewDAO.addView(reviewDTO.getReviewNo());
 
 		lblTitle.setFont(new Font("굴림", Font.PLAIN, 15));
 		lblTitle.setBounds(80, 51, 429, 36);

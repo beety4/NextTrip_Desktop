@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
 import domain.review.ReviewDTO;
+import domain.search.TourSpotDTO;
 import domain.search.TourSpotSearchDTO;
 
 public class CustomUtility {
@@ -121,6 +122,21 @@ public class CustomUtility {
 			result[i][1] = list.get(i).getTitle();
 			result[i][2] = list.get(i).getAddr1();
 			result[i][3] = list.get(i).getModifiedtime();
+		}
+		return result;
+	}
+	
+	// TourSpot ArrayList -> 2차원 배열
+	public String[][] tourSpotListToArray(ArrayList<TourSpotDTO> list) {
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+
+		String[][] result = new String[list.size()][3];
+		for (int i = 0; i < list.size(); i++) {
+			result[i][0] = list.get(i).getContentid();
+			result[i][1] = list.get(i).getTitle();
+			result[i][2] = list.get(i).getAddr1();
 		}
 		return result;
 	}

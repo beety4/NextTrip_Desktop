@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import config.customlib.CustomCookie;
-import domain.intro.IntroPanel;
 import domain.sign.SignPanel;
 
 public class MainFrame extends JFrame {
@@ -43,6 +42,7 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		// 쿠키 여부 검사 후 메인 패널 실행
 		CustomCookie customCookie = new CustomCookie();
 		switch(customCookie.getCookie()) {
 		case 0:	// 로그인 성공

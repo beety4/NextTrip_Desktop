@@ -1,78 +1,50 @@
 package domain.intro;
 
-import java.awt.Graphics;
-import java.awt.Image;
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import config.api.ApiService;
-import config.customlib.CustomSession;
-import config.customlib.CustomUtility;
-import domain.review.ShowReviewPanel;
 import domain.search.TourSpotDTO;
-import domain.search.TourSpotSearchDTO;
 
-import javax.swing.JButton;
-import java.awt.Font;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class IntroPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	
-	@Override
-	public void paintComponent(Graphics g) {
-		Image bg = new ImageIcon("src/resource/backgroundimage.png <-- required").getImage();
-		g.drawImage(bg, 0, 0, null);
-		setOpaque(false);
-		super.paintComponent(g);
-	}
 	
 	/**
 	 * Create the panel.
 	 */
 	public IntroPanel(JFrame win) {
 		setBackground(new Color(249, 252, 255));
-		CustomUtility cu = new CustomUtility();
-		CustomSession session = new CustomSession();
-		
 		setBounds(0, 0, 1100, 700);
 		setSize(1100, 700);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
 
 		
-		TourSpotPanel tourSpot1 = new TourSpotPanel(win);
-		tourSpot1.setBounds(44, 10, 270, 280);
-		add(tourSpot1);	
+		// 랜덤 관광지 가져오기
+		ApiService apiService = new ApiService();
+		ArrayList<TourSpotDTO> tourSpotList = apiService.getIndexTour();
+
+		// 랜덤 관광지 패널 출력
+		TourSpotPanel[] tourSpotPanels = new TourSpotPanel[6];
+		for (int i = 0; i < tourSpotList.size(); i++) {
+			tourSpotPanels[i] = new TourSpotPanel(win, tourSpotList.get(i));
+			add(tourSpotPanels[i]);
+		}
 		
-		TourSpotPanel tourSpot2 = new TourSpotPanel(win);
-		tourSpot2.setBounds(377, 10, 270, 280);
-		add(tourSpot2);	
-		
-		TourSpotPanel tourSpot3 = new TourSpotPanel(win);
-		tourSpot3.setBounds(709, 10, 270, 280);
-		add(tourSpot3);	
-		
-		TourSpotPanel tourSpot4 = new TourSpotPanel(win);
-		tourSpot4.setBounds(44, 300, 270, 280);
-		add(tourSpot4);	
-		
-		TourSpotPanel tourSpot5 = new TourSpotPanel(win);
-		tourSpot5.setBounds(377, 300, 270, 280);
-		add(tourSpot5);	
-		
-		TourSpotPanel tourSpot6 = new TourSpotPanel(win);
-		tourSpot6.setBounds(709, 300, 270, 280);
-		add(tourSpot6);	
+
+		// 위치 조정
+		tourSpotPanels[0].setBounds(34, 10, 270, 280);
+		tourSpotPanels[1].setBounds(367, 10, 270, 280);
+		tourSpotPanels[2].setBounds(699, 10, 270, 280);
+		tourSpotPanels[3].setBounds(34, 300, 270, 280);
+		tourSpotPanels[4].setBounds(367, 300, 270, 280);
+		tourSpotPanels[5].setBounds(699, 300, 270, 280);
 
 	}
 }

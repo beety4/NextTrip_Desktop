@@ -14,7 +14,7 @@ public class CookieDTO {
 	private LocalDateTime expires;
 	private String checksum;
 		
-	// 생성자 오버로딩 - String -> LocalDateTime 타입 변환 (쿠키 읽을때)
+	// String -> LocalDateTime 타입 변환 (쿠키 읽을때)
 	public CookieDTO(String value, String expires) {
 		this.value = value;
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd/HH:mm:ss");

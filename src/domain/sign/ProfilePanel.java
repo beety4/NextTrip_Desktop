@@ -2,33 +2,40 @@ package domain.sign;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import config.api.ApiService;
 import config.customlib.CustomSession;
 import config.customlib.CustomUtility;
-import domain.search.TourSpotDTO;
-import domain.search.TourSpotSearchDTO;
+import config.ftp.FtpService;
+import domain.MainTabPanel;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JPasswordField;
 
 public class ProfilePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private JButton btnBack = new JButton();
 	private JLabel lblChagePwd = new JLabel("Change Password");
 	private JLabel lblPD = new JLabel("Personal Detail");
 	
 	private JLabel lblProfileImg = new JLabel("프로필 사진");
 	private JButton btnFile = new JButton("파일 선택");
-	private JLabel lblSelectedImg = new JLabel("선택된 파일 없음");
+	private JLabel lblFileChoose = new JLabel("선택된 파일 없음");
+	private JFileChooser jFileChooser = new JFileChooser();
+	private String originFilePath = null;
 	
 	private JLabel lblName = new JLabel("Name");
 	private JTextField txtName = new JTextField();
@@ -44,10 +51,13 @@ public class ProfilePanel extends JPanel {
 	private JTextField txtEmail = new JTextField();
 	
 	private JLabel lblPwd = new JLabel("Your Password");
-	private JTextField txtPwd = new JTextField();
+	private JPasswordField txtPwd = new JPasswordField();
 	private JLabel lblCP = new JLabel("Change Password");
-	private JTextField txtChangePwd = new JTextField();
+	private JPasswordField txtPwdChk = new JPasswordField();
 	private JButton btnUpload = new JButton("Upload");
+	private final JLabel lblAlert = new JLabel("모든 필드를 입력하셔야 변경 가능합니다.");
+	
+	
 	
 	
 	@Override
@@ -71,13 +81,23 @@ public class ProfilePanel extends JPanel {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		setLayout(null);
 		
+		
+		btnBack.setBounds(12, 10, 40, 36);
+	      cu.setImg(btnBack, "src/resource/element/backIcon.png", 50, 50);
+	      btnBack.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	            win.setContentPane(new MainTabPanel(win));
+	            win.revalidate();
+	         }
+	      });
+	      add(btnBack);
 	
 		SignDAO signDAO = new SignDAO();
 		String id = (String)session.getAttributes("sID");
 		UserDTO userDTO = signDAO.getUserInfo(id);
 		
 		
-		String profileImg = userDTO.getImg();
+		String profileImg = (String)session.getAttributes("sIMG");
 		lblProfileImg.setBounds(61, 99, 249, 241);
 		cu.setImg(lblProfileImg, profileImg, 249, 241);
 		add(lblProfileImg);
@@ -181,8 +201,6 @@ public class ProfilePanel extends JPanel {
 		add(lblPwd);
 		
 		
-		txtPwd.setFont(new Font("굴림", Font.PLAIN, 15));
-		txtPwd.setColumns(10);
 		txtPwd.setBounds(350, 468, 291, 36);
 		add(txtPwd);
 		
@@ -192,23 +210,86 @@ public class ProfilePanel extends JPanel {
 		add(lblChagePwd);
 		
 		
-		txtChangePwd.setFont(new Font("굴림", Font.PLAIN, 15));
-		txtChangePwd.setColumns(10);
-		txtChangePwd.setBounds(704, 468, 291, 36);
-		add(txtChangePwd);
+		txtPwdChk.setBounds(704, 468, 291, 36);
+		add(txtPwdChk);
 		
 		
+		// 파일 업로드
 		btnFile.setBounds(61, 383, 91, 23);
+		btnFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jFileChooser.showOpenDialog(null);
+				originFilePath = jFileChooser.getSelectedFile().getPath();
+				lblFileChoose.setText(originFilePath);
+			}
+		});
 		add(btnFile);
+
+		lblFileChoose.setBounds(164, 387, 146, 15);
+		add(lblFileChoose);
 		
 		
-		lblSelectedImg.setBounds(164, 387, 146, 15);
-		add(lblSelectedImg);
-		
-		
+		// 수정 버튼
 		btnUpload.setFont(new Font("굴림", Font.PLAIN, 15));
 		btnUpload.setBounds(350, 538, 108, 36);
-		add(btnUpload);
+		btnUpload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//파라미터 처리
+				String id = txtID.getText();
+				String pw = new String(txtPwd.getPassword());
+				String pwchk = new String(txtPwdChk.getPassword());
+				String name = txtName.getText();
+				
+				// 입력값 검사
+				if(cu.isNullOrEmpty(new String[] {id, pw, pwchk, name})) {
+					JOptionPane.showMessageDialog(null, "모둔 값을 입력해 주세요!");
+					return;
+				}
+				if(pw.equals(pwchk) == false) {
+					JOptionPane.showMessageDialog(null, "패스워드가 일치하지 않습니다!");
+					return;
+				}
 
+				// 파일 업로드
+				String img = null;
+				if (originFilePath == null) {
+					img = "assets\\img\\profileIMG\\default.png";
+				} else {
+					FtpService ftpService = new FtpService();
+					img = ftpService.uploadFile(originFilePath, "profileIMG");
+					ftpService.close();
+				}
+
+				// 사용자 입력 값으로 DTO 생성
+				UserDTO userDTO = UserDTO.builder()
+						.id(id)
+						.password(pw)
+						.name(name)
+						.img(img)
+						.build();
+						
+				// DB와 프로필 수정 로직 실행
+				SignDAO signDAO = new SignDAO();
+				int result = signDAO.editProfile(userDTO);
+				switch(result) {
+					case 1:
+						JOptionPane.showMessageDialog(null, "프로필이 수정되었습니다.");
+						String remote = "http://aws.akotis.kr:8080/NextTrip/";
+						session.setAttributes("sNAME", userDTO.getName());
+						session.setAttributes("sIMG", remote + userDTO.getImg().replace("\\", "/"));
+						win.setContentPane(new MainTabPanel(win));
+						win.revalidate();
+						break;
+					case -1:
+						JOptionPane.showMessageDialog(null, "에러 : 관리자에게 문의하세요");
+						break;
+				}
+			}
+		});
+		add(btnUpload);
+		lblAlert.setBounds(61, 478, 238, 15);
+		
+		add(lblAlert);
+		
 	}
 }

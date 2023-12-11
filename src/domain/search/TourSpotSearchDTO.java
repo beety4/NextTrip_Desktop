@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+//DTO에 선언한 파라미터만 가져오고 나머진 무시
 public class TourSpotSearchDTO {
 	private String addr1;
 	private String areacode;

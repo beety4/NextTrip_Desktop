@@ -24,7 +24,7 @@ public class ApiService {
 		StringBuilder sb = new StringBuilder();
 		sb.append("/areaBasedSyncList1");						// 요청 주소
 		sb.append("?numOfRows=6");								// 몇개
-		sb.append("&pageNo=" + randModule.getRndInt(0, 28));	// 페이지 랜덤 선택
+		sb.append("&pageNo=" + randModule.getRndInt(0, 15));	// 페이지 랜덤 선택
 		sb.append("&showflag=1");								// 컨텐츠 표출
 		sb.append("&listYN=Y");									// 리스트 목록 보기	
 		sb.append("&arrange=O");								// A 제목순

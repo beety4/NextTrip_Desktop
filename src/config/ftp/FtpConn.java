@@ -8,7 +8,7 @@ public class FtpConn {
 	private String id = "";
 	private String password = "";
 	
-	// 생성자를 통한 FTP 유저 설정
+	// 생성자를 통한 FTPS 유저 설정
 	public FtpConn(String id, String password) {
 		this.id = id;
 		this.password = password;

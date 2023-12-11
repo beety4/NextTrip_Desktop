@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomSession {
+	// static으로 세션에 map 형태로 저장
 	private static Map<String, Object> sessionMap = new HashMap<>();
 	
 	// 세션에 값 저장

@@ -1,5 +1,6 @@
 package domain;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,8 +21,8 @@ import domain.bookmark.BookMarkPanel;
 import domain.intro.IntroPanel;
 import domain.review.ReviewPanel;
 import domain.search.SearchPanel;
+import domain.sign.ProfilePanel;
 import domain.sign.SignPanel;
-import java.awt.Color;
 
 public class MainTabPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -37,8 +38,7 @@ public class MainTabPanel extends JPanel {
 	private JMenuItem mntmLogout = new JMenuItem("로그아웃");
 	private JMenuItem mntmExit = new JMenuItem("종료");
 	
-	private JMenu mnConfig = new JMenu("설정");
-	private JMenuItem mntmBgColor = new JMenuItem("배경색 설정");
+	private JMenu mnSystem = new JMenu("시스템");
 	
 	
 	
@@ -83,12 +83,24 @@ public class MainTabPanel extends JPanel {
 		menuBar.setBounds(0, 0, 1100, 23);
 		add(menuBar);
 		
+		// 설정 메뉴
+		menuBar.add(mnSystem);
+		mnSystem.add(mntmExit);
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int result = JOptionPane.showConfirmDialog(null, "정말 종료하시겠습니까?");
+				if(result == 0) {
+					System.exit(0);
+				}
+			}
+		});
+		
 		// 내 정보 메뉴
 		menuBar.add(mnMyInfo);
 		mnMyInfo.add(mntmProfile);
 		mntmProfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				win.setContentPane(new domain.sign.ProfilePanel(win));
+				win.setContentPane(new ProfilePanel(win));
 			}
 		});
 		
@@ -104,20 +116,6 @@ public class MainTabPanel extends JPanel {
 				}
 			}
 		});
-		
-		mnMyInfo.add(mntmExit);
-		mntmExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(null, "정말 종료하시겠습니까?");
-				if(result == 0) {
-					System.exit(0);
-				}
-			}
-		});
-		
-		// 설정 메뉴
-		menuBar.add(mnConfig);
-		mnConfig.add(mntmBgColor);
 		
 	}
 
